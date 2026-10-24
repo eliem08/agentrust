@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agent-fico"
+version = "0.1.0"
+description = "FICO for agents: a trust score before an agent can spend money"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+dependencies = []
+
+[project.scripts]
+agent-fico = "agent_fico.__main__:main"
+
+[tool.setuptools]
+packages = ["agent_fico"]
