@@ -7,8 +7,15 @@ NOW = datetime(2026, 10, 24)
 
 
 def hist(n, outcome="completed", merchants=10, days=400, amount=10):
-    return [{"ts": (NOW - timedelta(days=days - i * days // n)).isoformat(), "amount": amount,
-             "merchant": f"m{i % merchants}", "outcome": outcome} for i in range(n)]
+    return [
+        {
+            "ts": (NOW - timedelta(days=days - i * days // n)).isoformat(),
+            "amount": amount,
+            "merchant": f"m{i % merchants}",
+            "outcome": outcome,
+        }
+        for i in range(n)
+    ]
 
 
 class Tests(unittest.TestCase):

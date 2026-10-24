@@ -1,4 +1,5 @@
 """Agent credit scoring."""
+
 from __future__ import annotations
 
 import math
@@ -36,7 +37,9 @@ class Txn:
 
     @classmethod
     def from_dict(cls, d):
-        return cls(datetime.fromisoformat(d["ts"]), float(d["amount"]), d.get("merchant", "?"), d.get("outcome", "completed"))
+        return cls(
+            datetime.fromisoformat(d["ts"]), float(d["amount"]), d.get("merchant", "?"), d.get("outcome", "completed")
+        )
 
 
 @dataclass
