@@ -21,6 +21,18 @@ agentrust score examples/history.json --budget 2000
 agentrust score examples/history.json --json
 ```
 
+## Web app and API
+
+Every command is also a JSON API endpoint and a browser form, served by the built-in web app.
+
+```bash
+agentrust-web --port 8000          # then open http://127.0.0.1:8000
+docker build -t agentrust . && docker run -p 8000:8000 -v agentrust-data:/data agentrust
+```
+
+Endpoints: `POST /api/score`, plus `GET /healthz` and `GET /api/spec` (machine-readable field list).
+Files are sent as `{"name": ..., "content": ...}`, folders as `{"files": [...]}` or a base64 zip.
+
 ## Pricing
 
 Every plan starts with a 14-day free trial. Prices in USD, billed monthly unless noted.

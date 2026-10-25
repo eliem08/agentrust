@@ -23,6 +23,7 @@ dev = ["ruff>=0.6"]
 
 [project.scripts]
 agentrust = "agentrust.__main__:main"
+agentrust-web = "agentrust.web:main"
 
 [project.urls]
 Repository = "https://github.com/eliem08/agentrust"

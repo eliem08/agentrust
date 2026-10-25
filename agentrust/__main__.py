@@ -16,13 +16,18 @@ def _finite_float(s: str) -> float:
     return v
 
 
-def _run(argv=None):
+def build_parser():
     ap = argparse.ArgumentParser(prog="agentrust", description="Trust score for spending agents.")
     sub = ap.add_subparsers(dest="cmd", required=True)
     s = sub.add_parser("score")
     s.add_argument("history", help="JSON list of transactions")
     s.add_argument("--budget", type=_finite_float, help="agent's authorised monthly budget")
     s.add_argument("--json", action="store_true")
+    return ap
+
+
+def _run(argv=None):
+    ap = build_parser()
     a = ap.parse_args(argv)
 
     with open(a.history, encoding="utf-8-sig") as fh:
