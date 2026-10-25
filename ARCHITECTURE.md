@@ -1,4 +1,4 @@
-# Architecture — agent-fico
+# Architecture — agentrust
 
 ## 1. Scope
 A portable 300–850 trust score that tells merchants and payment rails whether an agent should be
@@ -55,4 +55,4 @@ p99 score lookup under 20 ms from cache. Outcome to score update in under 5 min.
 
 ## 8. Risks
 Cold-start network effects: the bureau has no value without merchant reporting. The wedge is to
-integrate with agent-buyer-protection and agent-plaid, which already see outcomes.
+integrate with agent-buyer-protection and grantgate, which already see outcomes.

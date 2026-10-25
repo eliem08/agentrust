@@ -1,7 +1,7 @@
 import unittest
 from datetime import datetime, timedelta
 
-from agent_fico import score
+from agentrust import score
 
 NOW = datetime(2026, 10, 24)
 

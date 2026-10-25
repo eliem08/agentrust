@@ -11,7 +11,7 @@ import pathlib
 import tempfile
 import unittest
 
-from agent_fico.__main__ import main
+from agentrust.__main__ import main
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 COMMANDS = [

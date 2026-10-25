@@ -17,7 +17,7 @@ def _finite_float(s: str) -> float:
 
 
 def _run(argv=None):
-    ap = argparse.ArgumentParser(prog="agent-fico", description="Trust score for spending agents.")
+    ap = argparse.ArgumentParser(prog="agentrust", description="Trust score for spending agents.")
     sub = ap.add_subparsers(dest="cmd", required=True)
     s = sub.add_parser("score")
     s.add_argument("history", help="JSON list of transactions")

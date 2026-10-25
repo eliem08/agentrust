@@ -1,15 +1,44 @@
-# agent-fico
+<!-- sell-kit:start -->
+# Agentrust
 
-[![CI](https://github.com/eliem08/agent-fico/actions/workflows/ci.yml/badge.svg)](https://github.com/eliem08/agent-fico/actions/workflows/ci.yml)
+[![CI](https://github.com/eliem08/agentrust/actions/workflows/ci.yml/badge.svg)](https://github.com/eliem08/agentrust/actions/workflows/ci.yml)
 
-> **FICO for agents** — a trust score before an agent can spend money.
+> **A 300-850 trust score for AI agents before you let them spend money.**
 
-Merchants, payment rails and APIs are about to receive purchase requests from
-millions of autonomous agents. They need one number that says *should I let
-this agent spend?* `agent-fico` computes a 300–850 score from an agent's
-transaction history, with reason codes and a recommended spending limit.
+**Who it's for:** Merchants, marketplaces and payment teams accepting agent-initiated purchases.
 
-## What the MVP does
+**The problem:** Agents are starting to pay for things, and merchants have no way to tell a reliable agent from a risky one.
+
+**What you get:** Score an agent's transaction history into a 300-850 band with reason codes and recommended per-transaction and daily limits.
+
+## Quickstart
+
+Customers receive a release archive with the wheel and the examples. Python 3.10+ and no other dependencies.
+
+```bash
+pip install agentrust-0.1.0-py3-none-any.whl
+agentrust score examples/history.json --budget 2000
+agentrust score examples/history.json --json
+```
+
+## Pricing
+
+Every plan starts with a 14-day free trial. Prices in USD, billed monthly unless noted.
+
+| Plan | Price | Includes |
+|---|---|---|
+| **Developer** | $49 per month | 10,000 scores a month; Reason codes; Spend-limit bands |
+| **Growth** | $499 per month | 250,000 scores a month; Custom band thresholds; Batch scoring |
+| **Enterprise** | $2,500 per month | Unlimited scoring; Model customisation; SLA |
+
+To start a trial or buy a plan, email **sales@YOUR-DOMAIN.com**.
+
+## Licence
+
+Proprietary. Copyright (c) 2026 eliem08. All rights reserved. Use requires a paid plan or an active trial; see [LICENSE](LICENSE).
+<!-- sell-kit:end -->
+
+## What it does
 
 Five FICO-style factors, each 0–1:
 
@@ -30,8 +59,8 @@ Five FICO-style factors, each 0–1:
 
 ```bash
 pip install -e .
-agent-fico score examples/history.json --budget 2000
-agent-fico score examples/history.json --budget 2000 --json
+agentrust score examples/history.json --budget 2000
+agentrust score examples/history.json --budget 2000 --json
 ```
 
 History format: a list of `{"ts": "2026-10-01T12:00:00", "amount": 42.5, "merchant": "acme", "outcome": "completed|disputed|chargeback|refunded|failed"}`.
@@ -40,7 +69,7 @@ History format: a list of `{"ts": "2026-10-01T12:00:00", "amount": 42.5, "mercha
 
 - Network-wide bureau: merchants report outcomes, agents carry a portable score
 - Owner (human/org) score blended in for new agents ("thin file")
-- Signed score attestations verifiable by merchants (pairs with agent-okta)
+- Signed score attestations verifiable by merchants (pairs with agentwarden)
 
 ## Development
 
@@ -54,8 +83,8 @@ ruff check . && ruff format --check .               # lint + format
 ```
 
 ```
-agent_fico/core.py       domain logic (pure, importable, fully tested)
-agent_fico/__main__.py   CLI (`agent-fico ...` / `python -m agent_fico ...`)
+agentrust/core.py       domain logic (pure, importable, fully tested)
+agentrust/__main__.py   CLI (`agentrust ...` / `python -m agentrust ...`)
 tests/                unit tests + generated CLI smoke tests
 examples/             sample inputs used by the docs and smoke tests
 ```
