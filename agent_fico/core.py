@@ -5,12 +5,13 @@ from __future__ import annotations
 import math
 from collections import Counter
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 
 __all__ = ["WEIGHTS", "Txn", "Report", "score", "BANDS"]
 
 WEIGHTS = {"payment_history": 0.35, "utilization": 0.30, "history_length": 0.15, "velocity": 0.10, "mix": 0.10}
 BAD = {"disputed": 1.0, "chargeback": 1.5, "failed": 0.3, "refunded": 0.2}
+GOOD = {"completed"}  # anything else (pending, typos, made-up outcomes) earns no payment-history credit
 # (min score, band, per-txn limit, daily limit)
 BANDS = [
     (800, "Exceptional", 5000, 20000),
@@ -37,9 +38,16 @@ class Txn:
 
     @classmethod
     def from_dict(cls, d):
-        return cls(
-            datetime.fromisoformat(d["ts"]), float(d["amount"]), d.get("merchant", "?"), d.get("outcome", "completed")
-        )
+        if not isinstance(d, dict):
+            raise ValueError(f"each transaction must be an object, got {d!r}")
+        ts = datetime.fromisoformat(str(d["ts"]).replace("Z", "+00:00"))
+        if ts.tzinfo is not None:  # compare everything as naive UTC so mixed offsets cannot crash or reorder
+            ts = ts.astimezone(timezone.utc).replace(tzinfo=None)
+        amount = float(d["amount"])
+        if not math.isfinite(amount) or amount < 0:
+            raise ValueError(f"amount must be a finite number >= 0 (refunds are an outcome), got {d['amount']!r}")
+        outcome = str(d.get("outcome", "completed")).strip().lower()
+        return cls(ts, amount, str(d.get("merchant", "?")), outcome)
 
 
 @dataclass
@@ -61,7 +69,7 @@ def _payment_history(txns, now):
         w = math.exp(-age_days / 180)  # recent behaviour dominates
         if t.outcome in BAD:
             bad += w * BAD[t.outcome]
-        else:
+        elif t.outcome in GOOD:
             good += w
     return good / (good + 3 * bad) if good + bad else 0.5
 
@@ -97,8 +105,15 @@ def _mix(txns):
 
 
 def score(history: list[dict], budget: float | None = None, now: datetime | None = None) -> Report:
+    if not isinstance(history, list):
+        raise ValueError("history must be a JSON list of transactions")
+    if budget is not None and not (math.isfinite(budget) and budget > 0):
+        raise ValueError(f"budget must be a finite number > 0, got {budget!r}")
     txns = [Txn.from_dict(h) for h in history]
-    now = now or (max(t.ts for t in txns) if txns else datetime.now())
+    if now is None:
+        now = max(t.ts for t in txns) if txns else datetime.now()
+    else:
+        txns = [t for t in txns if t.ts <= now]  # future-dated records cannot pad history
     factors = {
         "payment_history": _payment_history(txns, now),
         "utilization": _utilization(txns, budget, now),
