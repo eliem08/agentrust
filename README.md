@@ -46,7 +46,7 @@ Every plan starts with a 14-day free trial. Prices in USD, billed monthly unless
 | **Growth** | $499 per month | 250,000 scores a month; Custom band thresholds; Batch scoring |
 | **Enterprise** | $2,500 per month | Unlimited scoring; Model customisation; SLA |
 
-To start a trial or buy a plan, email **sales@YOUR-DOMAIN.com**.
+To start a trial or buy a plan, [request access](https://github.com/eliem08/agentrust/issues/new?title=Agentrust%20trial&labels=sales).
 
 ## Licence
 
