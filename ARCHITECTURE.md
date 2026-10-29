@@ -7,6 +7,10 @@ allowed to spend, plus reason codes and recommended limits.
 **Product:** a bureau. Merchants report outcomes, agents carry signed score attestations, and merchants query at checkout.
 
 ## 2. System context
+
+The diagram below is the product vision (the bureau), not the shipped MVP — the shipped
+code scores a single agent's history file locally. The bureau, outcome ledger, signed
+attestations, and JWKS verification are Roadmap items.
 ```mermaid
 flowchart LR
   Merchants -->|report outcomes: completed, disputed, chargeback| Bureau[(Outcome ledger)]
@@ -39,7 +43,9 @@ weighted shortfall that sit below 0.8, the same way FICO adverse-action notices 
   not "Poor". The product blends in the *owner's* score.
 - `now` is injectable, so scoring is deterministic in tests and backfills.
 
-## 5. Production architecture
+## 5. Future production architecture (not shipped)
+Not shipped: the items below describe the future bureau service, not the current code,
+which is a local scorer over a history file with no ingest API, feature store, or attestations.
 - Outcome ingest API: merchants POST signed outcome events, deduped by `(merchant, txn_id)`.
 - Feature store: per-agent rolling aggregates maintained incrementally, so there are no full rescans.
 - Scoring service: stateless, versioned model (`model_version` in every response).
@@ -51,6 +57,7 @@ weighted shortfall that sit below 0.8, the same way FICO adverse-action notices 
 - Dispute rights: agent owners can contest outcomes, and contested events are excluded pending review.
 
 ## 7. SLOs
+Targets for the future bureau service, not measurements of the shipped local scorer:
 p99 score lookup under 20 ms from cache. Outcome to score update in under 5 min.
 
 ## 8. Risks
