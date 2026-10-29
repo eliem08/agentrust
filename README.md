@@ -47,20 +47,26 @@ To sell self-serve, set four variables and point a Stripe webhook at `https://<y
 |---|---|
 | `STRIPE_SECRET_KEY` | `sk_live_...` |
 | `STRIPE_WEBHOOK_SECRET` | `whsec_...` |
-| `STRIPE_PRICES` | `team=price_123,business=price_456` |
+| `STRIPE_PRICES` | `developer=price_123,growth=price_456,enterprise=price_789` |
 | `PUBLIC_URL` | `https://agentrust.example.com` |
 
 Buyers pick a plan on `/pricing`, pay on Stripe Checkout and see their API key once on the success page. Cancelling the subscription revokes the key. A selling server always requires a key.
 
 ## Pricing
 
-Every plan starts with a 14-day free trial. Prices in USD, billed monthly unless noted.
+Monthly plans start with a 14-day free trial. Prices in USD, billed monthly unless noted.
+All plans unlock the same software in this release; score-volume figures below are licence
+terms, not code-enforced limits (nothing in the code caps scores per plan, and band
+thresholds are fixed). Higher tiers add licence scope and support, not gated features.
 
 | Plan | Price | Includes |
 |---|---|---|
 | **Developer** | $49 per month | 10,000 scores a month; Reason codes; Spend-limit bands |
-| **Growth** | $499 per month | 250,000 scores a month; Custom band thresholds; Batch scoring |
-| **Enterprise** | $2,500 per month | Unlimited scoring; Model customisation; SLA |
+| **Growth** | $499 per month | Everything in Developer; 250,000 scores a month |
+| **Enterprise** | $2,500 per month | Everything in Developer; Unlimited scoring; SLA |
+
+Custom band thresholds and model customisation are Roadmap items, not shipped features.
+Copy `.env.example` to `.env` and fill in real values (never commit `.env`).
 
 To start a trial or buy a plan, [request access](https://github.com/eliem08/agentrust/issues/new?title=Agentrust%20trial&labels=sales).
 
@@ -101,6 +107,8 @@ History format: a list of `{"ts": "2026-10-01T12:00:00", "amount": 42.5, "mercha
 - Network-wide bureau: merchants report outcomes, agents carry a portable score
 - Owner (human/org) score blended in for new agents ("thin file")
 - Signed score attestations verifiable by merchants (pairs with agentwarden)
+- Custom band thresholds per plan
+- Model customisation for Enterprise
 
 ## Development
 
