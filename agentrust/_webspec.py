@@ -47,4 +47,24 @@ SPEC = {
             "id": "score",
         }
     ],
+    "plans": [
+        {
+            "key": "developer",
+            "name": "Developer",
+            "price": "$49 per month",
+            "features": ["10,000 scores a month", "Reason codes", "Spend-limit bands"],
+        },
+        {
+            "key": "growth",
+            "name": "Growth",
+            "price": "$499 per month",
+            "features": ["250,000 scores a month", "Hosted API", "JSON output"],
+        },
+        {
+            "key": "enterprise",
+            "name": "Enterprise",
+            "price": "$2,500 per month",
+            "features": ["Unlimited scoring", "Self-hosted deployment", "SLA"],
+        },
+    ],
 }
