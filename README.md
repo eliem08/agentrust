@@ -54,15 +54,18 @@ Buyers pick a plan on `/pricing`, pay on Stripe Checkout and see their API key o
 
 ## Pricing
 
-Every plan starts with a 14-day free trial. Prices in USD, billed monthly unless noted.
+Monthly plans start with a 14-day free trial. Prices in USD, billed monthly unless noted.
 
 | Plan | Price | Includes |
 |---|---|---|
 | **Developer** | $49 per month | 10,000 scores a month; Reason codes; Spend-limit bands |
-| **Growth** | $499 per month | 250,000 scores a month; Custom band thresholds; Batch scoring |
-| **Enterprise** | $2,500 per month | Unlimited scoring; Model customisation; SLA |
+| **Growth** | $499 per month | 250,000 scores a month; Hosted API; JSON output |
+| **Enterprise** | $2,500 per month | Unlimited scoring; Self-hosted deployment; SLA |
 
 To start a trial or buy a plan, [request access](https://github.com/eliem08/agentrust/issues/new?title=Agentrust%20trial&labels=sales).
+
+Plan note: every plan runs the same software, and every API key unlocks all of it. Seat, agent and volume
+limits are licence terms; the code does not enforce them. Support, SLA and done-for-you items are services.
 
 ## Licence
 
