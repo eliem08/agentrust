@@ -5,6 +5,7 @@ import math
 import os
 import sys
 
+from .calibrate import calibrate, load_outcomes, load_weights
 from .core import score
 
 
@@ -23,6 +24,10 @@ def build_parser():
     s.add_argument("history", help="JSON list of transactions")
     s.add_argument("--budget", type=_finite_float, help="agent's authorised monthly budget")
     s.add_argument("--json", action="store_true")
+    s.add_argument("--weights", help="calibration file from `calibrate` (default: built-in weights)")
+    c = sub.add_parser("calibrate", help="fit the factor weights to agents whose outcome you know")
+    c.add_argument("outcomes", help='JSON or JSON lines: {"history": [...], "budget": 500, "bad": true}')
+    c.add_argument("--out", help="write the calibration here, for score --weights")
     return ap
 
 
@@ -30,8 +35,30 @@ def _run(argv=None):
     ap = build_parser()
     a = ap.parse_args(argv)
 
+    if a.cmd == "calibrate":
+        res = calibrate(load_outcomes(a.outcomes))
+        print(f"{res['agents']} agents, {res['bad']} bad")
+        print(
+            f"  ranking quality (AUC): built-in weights {res['auc_default']:.3f}, "
+            f"fitted weights {res['auc_calibrated_cv']:.3f} (cross-validated)"
+        )
+        for k, v in res["weights"].items():
+            print(f"  {k:<16} {v:.3f}")
+        if res["backwards_factors"]:
+            print(f"  set to 0, pointed the wrong way in your data: {', '.join(res['backwards_factors'])}")
+        for b in res["bands"]:
+            rate = "-" if b["bad_rate"] is None else f"{b['bad_rate']:.0%} bad"
+            print(f"  {b['band']:<12} {b['agents']:>5} agents  {rate}")
+        verdict = "use them" if res["recommended"] else "they do not beat the built-in weights; keep those"
+        print(f"fitted weights: {verdict}")
+        if a.out:
+            with open(a.out, "w", encoding="utf-8") as fh:
+                json.dump(res, fh, indent=2)
+            print(f"written to {a.out}; score with --weights {a.out}")
+        return 0
+    weights = load_weights(a.weights) if a.weights else None
     with open(a.history, encoding="utf-8-sig") as fh:
-        rep = score(json.load(fh), a.budget)
+        rep = score(json.load(fh), a.budget, weights=weights)
     if a.json:
         print(json.dumps(rep.__dict__, indent=2))
         return 0

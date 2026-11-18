@@ -9,7 +9,7 @@
 
 **The problem:** Agents are starting to pay for things, and merchants have no way to tell a reliable agent from a risky one.
 
-**What you get:** Score an agent's transaction history into a 300-850 band with reason codes and recommended per-transaction and daily limits.
+**What you get:** Score an agent's transaction history into a 300-850 band with reason codes and recommended per-transaction and daily limits; weights calibrate to your own good and bad outcomes, with an out-of-sample check.
 
 ## Quickstart
 
@@ -19,6 +19,7 @@ Customers receive a release archive with the wheel and the examples. Python 3.10
 pip install agentrust-0.1.0-py3-none-any.whl
 agentrust score examples/history.json --budget 2000
 agentrust score examples/history.json --json
+agentrust calibrate examples/outcomes.jsonl
 ```
 
 ## Web app and API
@@ -33,7 +34,7 @@ docker build -t agentrust . && docker run -p 8000:8000 -e API_KEYS=sk_... -v age
 
 Every API call needs `Authorization: Bearer <key>` once any key exists; a server on a public address refuses to start without one. Calls are rate-limited per key (60/min, `--rate`) and metered: `agentrust-web usage` prints calls per key for billing.
 
-Endpoints: `POST /api/score`, plus `GET /healthz` and `GET /api/spec` (machine-readable field list).
+Endpoints: `POST /api/score`, `POST /api/calibrate`, plus `GET /healthz` and `GET /api/spec` (machine-readable field list).
 Files are sent as `{"name": ..., "content": ...}`, folders as `{"files": [...]}` or a base64 zip.
 
 ## Deploy and sell
@@ -60,7 +61,7 @@ Monthly plans start with a 14-day free trial. Prices in USD, billed monthly unle
 | Plan | Price | Includes |
 |---|---|---|
 | **Developer** | $49 per month | 10,000 scores a month; Reason codes; Spend-limit bands |
-| **Growth** | $499 per month | 250,000 scores a month; Hosted API; JSON output |
+| **Growth** | $499 per month | 250,000 scores a month; Weights calibrated to your outcomes; Hosted API; JSON output |
 | **Enterprise** | $2,500 per month | Unlimited scoring; Self-hosted deployment; SLA |
 
 To start a trial or buy a plan, [request access](https://github.com/eliem08/agentrust/issues/new?title=Agentrust%20trial&labels=sales).
@@ -91,12 +92,38 @@ Five FICO-style factors, each 0–1:
 - **Reason codes** for the two weakest factors (adverse-action style)
 - **Recommended limit** per transaction and per day by band
 
+## Calibrate to your own outcomes
+
+The weights above are starting values. Once you know how some agents turned out, fit the weights to that:
+
+```bash
+agentrust calibrate outcomes.jsonl --out calibration.json
+agentrust score history.json --budget 2000 --weights calibration.json
+```
+
+`outcomes.jsonl` has one agent per line: `{"agent": "a1", "history": [...], "budget": 500, "bad": true}`, where
+`bad` is whatever outcome you want to predict (defaulted, fraud, cut off). You need at least 20 agents, with at
+least 5 good and 5 bad.
+
+How the fit works and how you can check it:
+- The five factors are computed exactly as `score` computes them. An L2-regularised logistic regression (Newton's
+  method, deterministic) then predicts `bad` from them.
+- Each factor's weight is how strongly a higher value predicts a good outcome. A factor that points the wrong way
+  in your data gets 0 and is named.
+- The command prints the ranking quality (AUC) of the built-in weights and of the fitted weights. The fitted
+  weights' AUC uses 5-fold cross-validation, so every agent is scored by a model that never saw it. It
+  recommends the fitted weights only if they rank better out of sample.
+- It shows the bad rate in each band under the fitted weights.
+
+`examples/outcomes.jsonl` is synthetic data for trying the command, not real agents.
+
 ## Quickstart
 
 ```bash
 pip install -e .
 agentrust score examples/history.json --budget 2000
 agentrust score examples/history.json --budget 2000 --json
+agentrust calibrate examples/outcomes.jsonl --out calibration.json
 ```
 
 History format: a list of `{"ts": "2026-10-01T12:00:00", "amount": 42.5, "merchant": "acme", "outcome": "completed|disputed|chargeback|refunded|failed"}`.

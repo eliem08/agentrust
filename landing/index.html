@@ -35,7 +35,7 @@
   <header>
     <div class="brand">Agentrust</div>
     <h1>A 300-850 trust score for AI agents before you let them spend money.</h1>
-    <p class="lede">Score an agent&#x27;s transaction history into a 300-850 band with reason codes and recommended per-transaction and daily limits.</p>
+    <p class="lede">Score an agent&#x27;s transaction history into a 300-850 band with reason codes and recommended per-transaction and daily limits; weights calibrate to your own good and bad outcomes, with an out-of-sample check.</p>
     <a class="btn primary" href="https://github.com/eliem08/agentrust/issues/new?title=Agentrust%20trial&amp;labels=sales">Start a 14-day free trial</a>
   </header>
   <section>
@@ -49,7 +49,8 @@
     <p>Python 3.10+, no other dependencies. Your release archive includes the wheel and examples.</p>
     <pre><code>pip install agentrust-0.1.0-py3-none-any.whl
 agentrust score examples/history.json --budget 2000
-agentrust score examples/history.json --json</code></pre>
+agentrust score examples/history.json --json
+agentrust calibrate examples/outcomes.jsonl</code></pre>
   </section>
   <section>
     <h2>Pricing</h2>
@@ -64,7 +65,7 @@ agentrust score examples/history.json --json</code></pre>
       <article class="plan">
         <h3>Growth</h3>
         <p class="price">$499<span>per month</span></p>
-        <ul><li>250,000 scores a month</li><li>Hosted API</li><li>JSON output</li></ul>
+        <ul><li>250,000 scores a month</li><li>Weights calibrated to your outcomes</li><li>Hosted API</li><li>JSON output</li></ul>
         <a class="btn" href="https://github.com/eliem08/agentrust/issues/new?title=Agentrust%20Growth&amp;labels=sales">Start free trial</a>
       </article>
       <article class="plan">

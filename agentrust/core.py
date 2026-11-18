@@ -104,7 +104,11 @@ def _mix(txns):
     return min(1.0, len({t.merchant for t in txns}) / 8)
 
 
-def score(history: list[dict], budget: float | None = None, now: datetime | None = None) -> Report:
+def score(
+    history: list[dict], budget: float | None = None, now: datetime | None = None, weights: dict | None = None
+) -> Report:
+    """weights: your calibrated factor weights (see calibrate.py); the built-in WEIGHTS otherwise."""
+    w = weights or WEIGHTS
     if not isinstance(history, list):
         raise ValueError("history must be a JSON list of transactions")
     if budget is not None and not (math.isfinite(budget) and budget > 0):
@@ -121,8 +125,8 @@ def score(history: list[dict], budget: float | None = None, now: datetime | None
         "velocity": _velocity(txns, now),
         "mix": _mix(txns),
     }
-    s = round(300 + 550 * sum(WEIGHTS[k] * v for k, v in factors.items()))
+    s = round(300 + 550 * sum(w[k] * v for k, v in factors.items()))
     band, per_txn, daily = next((b, p, d) for floor, b, p, d in BANDS if s >= floor)
-    weakest = sorted(factors, key=lambda k: factors[k] * WEIGHTS[k] - WEIGHTS[k])[:2]
+    weakest = sorted(factors, key=lambda k: factors[k] * w[k] - w[k])[:2]
     reasons = [REASONS[k] for k in weakest if factors[k] < 0.8]
     return Report(s, band, {k: round(v, 3) for k, v in factors.items()}, reasons, per_txn, daily)
