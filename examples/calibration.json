@@ -1,0 +1,44 @@
+{
+  "weights": {
+    "payment_history": 0.7632,
+    "utilization": 0.1605,
+    "history_length": 0.0,
+    "velocity": 0.0235,
+    "mix": 0.0527
+  },
+  "recommended": true,
+  "auc_default": 0.9694,
+  "auc_calibrated_cv": 0.9979,
+  "agents": 80,
+  "bad": 26,
+  "backwards_factors": [
+    "history_length"
+  ],
+  "bands": [
+    {
+      "band": "Exceptional",
+      "agents": 23,
+      "bad_rate": 0.0
+    },
+    {
+      "band": "Very good",
+      "agents": 23,
+      "bad_rate": 0.0
+    },
+    {
+      "band": "Good",
+      "agents": 9,
+      "bad_rate": 0.111
+    },
+    {
+      "band": "Fair",
+      "agents": 10,
+      "bad_rate": 1.0
+    },
+    {
+      "band": "Poor",
+      "agents": 15,
+      "bad_rate": 1.0
+    }
+  ]
+}

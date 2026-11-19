@@ -19,7 +19,7 @@ Customers receive a release archive with the wheel and the examples. Python 3.10
 pip install agentrust-0.1.0-py3-none-any.whl
 agentrust score examples/history.json --budget 2000
 agentrust score examples/history.json --json
-agentrust calibrate examples/outcomes.jsonl
+agentrust calibrate examples/outcomes.jsonl --out calibration.json
 ```
 
 ## Web app and API
